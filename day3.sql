@@ -133,3 +133,9 @@ VALUES
 (3,45000,7000,3000,'2024-01-31');
 
 
+select*from payroll;
+
+select e.emp_name,d.dept_name
+from emp e
+inner join departments d
+on e.dept_id =d.dept_id
