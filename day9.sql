@@ -165,3 +165,14 @@ delimiter ;
 call get_emp_deptid(2);
 
 -- output
+
+delimiter $$
+create procedure get_out(out total int)
+begin 
+select count(*) into total
+from employees;
+end $$
+delimiter ;
+
+call get_out(@ntc);
+select @ntc;
