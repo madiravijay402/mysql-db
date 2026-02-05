@@ -74,3 +74,60 @@ with avg_sal as(
 select emp_name,salary
 from employees
 where salary>(select avg_salary from avg_sal);
+
+-- cte + windows
+with ranked_emp as(
+select emp_name,salary,rank() over(order by salary) as Rank_no
+from employees
+)
+select*from ranked_emp;
+
+WITH ranked_osa AS (
+    SELECT emp_name, salary, dept_id,
+    ROW_NUMBER() OVER (
+        PARTITION BY dept_id
+        ORDER BY salary DESC
+    ) AS rn
+    FROM employees
+)
+SELECT emp_name, salary, dept_id
+FROM ranked_osa
+WHERE rn = 1;
+
+WITH ranked_emp AS (
+    SELECT emp_name, salary, dept_id,
+    DENSE_RANK() OVER (
+        PARTITION BY dept_id
+        ORDER BY salary DESC
+    ) AS rnk
+    FROM employees
+),
+top_emp AS (
+    SELECT emp_name, salary, dept_id
+    FROM ranked_emp
+    WHERE rnk = 1
+)
+SELECT * FROM top_emp;
+
+-- view
+
+create view Emp_basic_view as
+select emp_name,salary,dept_id
+from employees;
+
+select*from Emp_basic_view;
+
+CREATE VIEW emp_dept_view AS
+SELECT e.emp_id, e.emp_name, e.salary, d.dept_name
+FROM employees e
+JOIN departments d
+ON e.dept_id = d.dept_id;
+
+select*from emp
+;
+create view filter_copy as
+select emp_name,salary,
+dense_rank() over(order by salary desc) as rank_no
+from employees;
+
+select*from filter_copy;
