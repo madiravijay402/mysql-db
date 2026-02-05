@@ -38,3 +38,39 @@ select e.emp_name,d.dept_name
 from employees e
 inner join departments d
 on e.dept_id=d.dept_id;
+
+-- cte and windows function
+-- windows
+
+select emp_name,salary,
+row_number() over(order by salary desc) as row_no
+from employees;
+
+select emp_name,salary,
+rank() over(order by salary desc)as rank_no
+from employees;
+
+SELECT emp_name, salary, dept_id,
+ROW_NUMBER() OVER (
+    PARTITION BY dept_id
+    ORDER BY salary DESC
+) AS dept_rank
+FROM employees;
+
+SELECT emp_name, salary,
+DENSE_RANK() OVER (ORDER BY salary DESC) AS drnk
+FROM employees;
+
+SELECT emp_name, salary,
+AVG(salary) OVER () AS avg_salary
+FROM employees;
+
+-- cte
+
+with avg_sal as(
+    select avg(salary) as avg_salary
+    from employees
+)
+select emp_name,salary
+from employees
+where salary>(select avg_salary from avg_sal);
