@@ -176,3 +176,38 @@ delimiter ;
 
 call get_out(@ntc);
 select @ntc;
+
+-- input output not from tabe
+
+DELIMITER //
+CREATE PROCEDURE incrementValue(INOUT num INT)
+BEGIN
+    SET num = num + 10;
+END //
+DELIMITER ;
+
+SET @x = 5;
+CALL incrementValue(@x);
+SELECT @x;
+
+
+-- stored procedure using cte+windows function
+
+DELIMITER //
+CREATE PROCEDURE topEmpPerDept()
+BEGIN
+    WITH ranked_emp AS (
+        SELECT emp_name, salary, dept_id,
+        ROW_NUMBER() OVER (
+            PARTITION BY dept_id
+            ORDER BY salary DESC
+        ) AS rn
+        FROM employees
+    )
+    SELECT emp_name, salary, dept_id
+    FROM ranked_emp
+    WHERE rn = 1;
+END //
+DELIMITER ;
+
+call topEmpperdept;
