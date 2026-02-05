@@ -131,3 +131,37 @@ dense_rank() over(order by salary desc) as rank_no
 from employees;
 
 select*from filter_copy;
+
+-- update view -- allowe but shouldnt use windows,no group by and should be a single table
+
+UPDATE emp_basic_view
+SET salary = 55000
+WHERE emp_id = '101';
+
+-- stored procdeures
+
+delimiter $$
+create procedure get_employee()
+begin
+select emp_name,salary
+from employees;
+end $$
+delimiter ;
+
+drop procedure get_employee;
+call get_employee;
+
+-- input 
+
+delimiter $$
+create procedure get_emp_deptid(in d_id int)
+begin
+select emp_name,salary
+from employees
+where dept_id=d_id;
+end $$
+delimiter ;
+
+call get_emp_deptid(2);
+
+-- output
